@@ -18,6 +18,9 @@ def read_file(fp):
     return data
     
 def print_to_file(output_list):
+    """
+    Prints the output format to file given slides like [[1],[2,4],[3],[5],[10,12]]
+    """
     fopen = open("result.txt",'w')
     N = len(output_list)
     fopen.write(str(N)+"\n")
