@@ -34,8 +34,10 @@ def pair_verticals(verticals):
 
     photos = [k for k, _ in verticals.items()]
 
-    left = photos[:len(photos)]
-    right = photos[len(photos):]
+    size = len(photos) if len(photos)%2 == 0 else len(photos) - 1
+
+    left = photos[:int(size/2)]
+    right = photos[int(size/2):]
 
     random.shuffle(left)
     random.shuffle(right)
@@ -49,18 +51,20 @@ def pair_verticals(verticals):
 
         combined = ls | rs
         paired[left[i]] = ("V", combined)
-        pairing[left[i]] = [left[i], right[i]]
+        pairing[left[i]] = right[i]
     
     return paired, pairing
 
 
 
 if __name__ == "__main__":
-    FN = "b_lovely_landscapes.txt"
+    #FN = "b_lovely_landscapes.txt"
+    FN = "d_pet_pictures.txt"
+    FN = "c_memorable_moments.txt"
     #data = read_file(op.join(op.dirname(__file__), "data", "a_example.txt"))
     #data = read_file(op.join(op.dirname(__file__), "data", "c_memorable_moments.txt"))
-    #data = read_file(op.join(op.dirname(__file__), "data", "d_pet_pictures.txt"))
-    data = read_file(op.join(op.dirname(__file__), "data", FN))
+    #data = read_file(op.join(op.dirname(__file__), "data", FN))
+    #data = read_file(op.join(op.dirname(__file__), "data", FN))
     
 
     reverse_lookup = {}
@@ -89,7 +93,8 @@ if __name__ == "__main__":
         if v[0] == "V":
             ver_data[k] = v
 
-    ver_data, ver_pairing = pair_verticals(ver_data)
+    if len(ver_data) != 0:
+        ver_data, ver_pairing = pair_verticals(ver_data)
     ver_set = set([k for k, _ in ver_data.items()])
     
     reserve = set(horizontals)
