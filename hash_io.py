@@ -7,10 +7,12 @@ def read_file(fp):
     with open(fp, "r") as f:
         amount = int(f.readline())
         for i in range(amount):
-            line = f.readline().split(" ")
+            line = f.readline()[:-1].split(" ")
+            print(line)
             ori = line[0]
             tags = set()
-            for tag in line[1:]:
+            for tag in line[2:]:
                 tags.add(tag)
             data[i] = (ori, tags)
-            
+    
+    return data
