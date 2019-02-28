@@ -10,6 +10,12 @@ def metric(left, right):
     r_out = right - left
     return min(len(inter), len(l_out), len(r_out))
 
+
+def jaccard(left, right):
+    inter = left & right
+    total = left | right
+    return len(inter)/len(total)
+
 def combine_verticals(verticals):
     """
     Returns: VxV table of sets. V[0,1] is the union of tags from photos 0,1
@@ -24,11 +30,15 @@ def combine_verticals(verticals):
     return data
 
 
+def pair_verticals(verticals):
+    pass
+
+
 if __name__ == "__main__":
     #data = read_file(op.join(op.dirname(__file__), "data", "a_example.txt"))
     #data = read_file(op.join(op.dirname(__file__), "data", "c_memorable_moments.txt"))
-    data = read_file(op.join(op.dirname(__file__), "data", "d_pet_pictures.txt"))
-    #data = read_file(op.join(op.dirname(__file__), "data", "b_lovely_landscapes.txt"))
+    #data = read_file(op.join(op.dirname(__file__), "data", "d_pet_pictures.txt"))
+    data = read_file(op.join(op.dirname(__file__), "data", "b_lovely_landscapes.txt"))
     
 
     reverse_lookup = {}
@@ -63,7 +73,7 @@ if __name__ == "__main__":
     # TODO Stop if current value better than achievable
     for _ in tqdm(range(len(reserve))):
         current = slideshow[-1]
-        argmax = (None, -1)
+        argmax = (None, 5)
 
         cur_tags = data[current][1]
         candidates = set()
@@ -82,8 +92,8 @@ if __name__ == "__main__":
             continue
 
         for photo in candidates:
-            value = metric(data[current][1], data[photo][1])
-            if value > argmax[1]:
+            value = (0.33 - jaccard(data[current][1], data[photo][1]))**2
+            if value < argmax[1]:
                 argmax = (photo, value)
         
         slideshow.append(argmax[0])
@@ -91,4 +101,4 @@ if __name__ == "__main__":
         used |= set([slideshow[-1]])
     
     print(slideshow)
-    print_to_file( [[item] for item in slideshow] )
+    print_to_file( [[item] for item in slideshow], "a" )
