@@ -31,14 +31,36 @@ def combine_verticals(verticals):
 
 
 def pair_verticals(verticals):
-    pass
+
+    photos = [k for k, _ in verticals.items()]
+
+    left = photos[:len(photos)]
+    right = photos[len(photos):]
+
+    random.shuffle(left)
+    random.shuffle(right)
+
+    paired = {}
+    pairing = {}
+
+    for i in range(len(left)):
+        ls = verticals[left[i]][1]
+        rs = verticals[right[i]][1]
+
+        combined = ls | rs
+        paired[left[i]] = ("V", combined)
+        pairing[left[i]] = [left[i], right[i]]
+    
+    return paired, pairing
+
 
 
 if __name__ == "__main__":
+    FN = "b_lovely_landscapes.txt"
     #data = read_file(op.join(op.dirname(__file__), "data", "a_example.txt"))
     #data = read_file(op.join(op.dirname(__file__), "data", "c_memorable_moments.txt"))
     #data = read_file(op.join(op.dirname(__file__), "data", "d_pet_pictures.txt"))
-    data = read_file(op.join(op.dirname(__file__), "data", "b_lovely_landscapes.txt"))
+    data = read_file(op.join(op.dirname(__file__), "data", FN))
     
 
     reverse_lookup = {}
@@ -61,19 +83,28 @@ if __name__ == "__main__":
     # VxV table lower-triangle, [row][col]
     #vertical_pairs = combine_verticals([(k, v[1]) for k, v in data.items() if v[0] == "V"])
     #print(vertical_pairs)
+
+    ver_data = {}
+    for k, v in data.items():
+        if v[0] == "V":
+            ver_data[k] = v
+
+    ver_data, ver_pairing = pair_verticals(ver_data)
+    ver_set = set([k for k, _ in ver_data.items()])
     
     reserve = set(horizontals)
+    reserve |= ver_set
     used = set()
 
     slideshow = [random.choice(horizontals)]
     reserve -= set([slideshow[-1]])
     used |= set([slideshow[-1]])
-    used |= set(verticals)
+    used |= set([r for l, r in ver_pairing.items()])
 
     # TODO Stop if current value better than achievable
     for _ in tqdm(range(len(reserve))):
         current = slideshow[-1]
-        argmax = (None, 5)
+        argmax = (None, -1)
 
         cur_tags = data[current][1]
         candidates = set()
@@ -92,8 +123,9 @@ if __name__ == "__main__":
             continue
 
         for photo in candidates:
-            value = (0.33 - jaccard(data[current][1], data[photo][1]))**2
-            if value < argmax[1]:
+            #value = (0.33 - jaccard(data[current][1], data[photo][1]))**2
+            value = metric(data[current][1], data[photo][1])
+            if value > argmax[1]:
                 argmax = (photo, value)
         
         slideshow.append(argmax[0])
@@ -101,4 +133,13 @@ if __name__ == "__main__":
         used |= set([slideshow[-1]])
     
     print(slideshow)
-    print_to_file( [[item] for item in slideshow], "a" )
+
+    res = []
+
+    for s in slideshow:
+        if s in ver_set:
+            res.append([s, ver_pairing[s]])
+        else:
+            res.append([s])
+
+    print_to_file( res, FN[:-4] + "_result" )
