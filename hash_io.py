@@ -23,3 +23,4 @@ def print_to_file(output_list):
     fopen.write(str(N)+"\n")
     for item in output_list:    
         fopen.write(" ".join(str(x) for x in item)+"\n")
+    fopen.close()
