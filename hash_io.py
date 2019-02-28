@@ -8,7 +8,6 @@ def read_file(fp):
         amount = int(f.readline())
         for i in range(amount):
             line = f.readline()[:-1].split(" ")
-            print(line)
             ori = line[0]
             tags = set()
             for tag in line[2:]:

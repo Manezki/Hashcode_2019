@@ -9,13 +9,18 @@ def metric(left, right):
     return min(inter, l_out, r_out)
 
 if __name__ == "__main__":
-    example_a = read_file(op.join(op.dirname(__file__), "data", "a_example.txt"))
+    data = read_file(op.join(op.dirname(__file__), "data", "a_example.txt"))
     
-    photos = [k for k, _ in example_a.items()]
+    reverse_lookup = {}
+    print(data)
 
-    out = [random.choice(photos)]
-
+    for k, v in data.items():
+        for tag in v[1]:
+            photos = reverse_lookup.get(tag, set())
+            photos.add(k)
+            reverse_lookup[tag] = photos
     
+    print(reverse_lookup)
 
 
     
