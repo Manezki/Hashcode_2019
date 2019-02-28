@@ -1,8 +1,10 @@
+from bitsets import bitset
 def read_file(fp):
     """
     Returns Dict (photo_id : ( (H,V), set (tags) )
     """
     data = {}
+    lookup = {}
 
     with open(fp, "r") as f:
         amount = int(f.readline())
@@ -11,7 +13,9 @@ def read_file(fp):
             ori = line[0]
             tags = set()
             for tag in line[2:]:
-                tags.add(tag)
+                int_tag = lookup.get(tag, len(lookup))
+                lookup[tag] = int_tag
+                tags.add(int_tag)
             data[i] = (ori, tags)
             
     return data
