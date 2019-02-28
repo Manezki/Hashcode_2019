@@ -120,6 +120,8 @@ if __name__ == "__main__":
 
         for t in cur_tags:
             candidates |= reverse_lookup[t]
+            if len(candidates) > 1000:
+                break
 
         candidates -= used
     
