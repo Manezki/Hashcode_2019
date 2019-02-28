@@ -60,11 +60,12 @@ def pair_verticals(verticals):
 if __name__ == "__main__":
     #FN = "b_lovely_landscapes.txt"
     FN = "d_pet_pictures.txt"
-    FN = "c_memorable_moments.txt"
+    #FN = "c_memorable_moments.txt"
+    #FN = "a_example.txt"
     #data = read_file(op.join(op.dirname(__file__), "data", "a_example.txt"))
     #data = read_file(op.join(op.dirname(__file__), "data", "c_memorable_moments.txt"))
     #data = read_file(op.join(op.dirname(__file__), "data", FN))
-    #data = read_file(op.join(op.dirname(__file__), "data", FN))
+    data = read_file(op.join(op.dirname(__file__), "data", FN))
     
 
     reverse_lookup = {}
@@ -101,7 +102,10 @@ if __name__ == "__main__":
     reserve |= ver_set
     used = set()
 
-    slideshow = [random.choice(horizontals)]
+    if len(horizontals) == 0:
+        slideshow = [random.choice(list(ver_set))]
+    else:
+        slideshow = [random.choice(horizontals)]
     reserve -= set([slideshow[-1]])
     used |= set([slideshow[-1]])
     used |= set([r for l, r in ver_pairing.items()])
