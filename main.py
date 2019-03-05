@@ -56,11 +56,61 @@ def pair_verticals(verticals):
     return paired, pairing
 
 
+def create_slideshow(horizontals, verticals, data, vertical_pairings, metric):
+    
+    reserve = set(horizontals)
+    reserve |= set(verticals)
+    used = set()
+
+    if len(horizontals) == 0:
+        slideshow = [random.choice(list(verticals))]
+    else:
+        slideshow = [random.choice(horizontals)]
+
+    reserve -= set([slideshow[-1]])
+    used |= set([slideshow[-1]])
+    used |= set([r for l, r in vertical_pairings.items()])
+
+    # TODO Stop if current value better than achievable
+    for _ in tqdm(range(len(reserve))):
+        current = slideshow[-1]
+        argmax = (None, -1)
+
+        #cur_tags = data[current][1]
+        candidates = reserve
+
+        #for t in cur_tags:
+        #    candidates |= reverse_lookup[t]
+        #    if len(candidates) > 1000:
+        #        break
+
+        candidates -= used
+    
+        if len(candidates) == 0:
+            argmax = (random.choice(list(reserve)), -1)
+            
+            slideshow.append(argmax[0])
+            reserve -= set([argmax[0]])
+            used |= set([slideshow[-1]])
+            continue
+
+        for photo in candidates:
+            #value = (0.33 - jaccard(data[current][1], data[photo][1]))**2
+            value = metric(data[current][1], data[photo][1])
+            if value > argmax[1]:
+                argmax = (photo, value)
+        
+        slideshow.append(argmax[0])
+        reserve -= set([argmax[0]])
+        used |= set([slideshow[-1]])
+    
+    return slideshow
+
 
 if __name__ == "__main__":
     #FN = "b_lovely_landscapes.txt"
-    FN = "d_pet_pictures.txt"
-    #FN = "c_memorable_moments.txt"
+    #FN = "d_pet_pictures.txt"
+    FN = "c_memorable_moments.txt"
     #FN = "a_example.txt"
     #data = read_file(op.join(op.dirname(__file__), "data", "a_example.txt"))
     #data = read_file(op.join(op.dirname(__file__), "data", "c_memorable_moments.txt"))
