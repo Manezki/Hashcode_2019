@@ -1,4 +1,11 @@
 from bitsets import bitset
+
+AMOUNT_TAGS = {"a": 6,
+               "b": 840000,
+               "c": 2166,
+               "d": 220,
+               "e": 500}
+
 def read_file(fp):
     """
     Returns Dict (photo_id : ( (H,V), set (tags) )
@@ -17,6 +24,8 @@ def read_file(fp):
                 lookup[tag] = int_tag
                 tags.add(int_tag)
             data[i] = (ori, tags)
+
+    print("Data from " + fp + " contains " + str(len(lookup)) + " tags")
             
     return data
     
@@ -30,3 +39,12 @@ def print_to_file(output_list, name):
     for item in output_list:    
         fopen.write(" ".join(str(x) for x in item)+"\n")
     fopen.close()
+
+
+if __name__ == "__main__":
+    import os
+
+    data_dir = os.path.join(os.path.dirname(__file__), "data")
+
+    for f in os.listdir(data_dir):
+        read_file(os.path.join(data_dir, f))

@@ -9,16 +9,6 @@ from main import create_slideshow, pair_verticals
 
 class NN():
     def __init__(self):
-        #torch.device("cpu")
-
-        #self.w_l1 = np.random.rand(7, 3) - 0.5
-        #self.b_l1 = np.random.rand(7, 1) - 0.5
-
-        #self.w_l2 = np.random.rand(5, 7) - 0.5
-        #self.b_l2 = np.random.rand(5, 1) - 0.5
-
-        #self.w_l3 = np.random.rand(1, 5) - 0.5
-        #self.b_l3 = np.random.rand(1, 1) - 0.5
 
         self.model = torch.nn.Sequential(
             torch.nn.Linear(3, 8),
